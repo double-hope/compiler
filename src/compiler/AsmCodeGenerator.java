@@ -160,7 +160,7 @@ public class AsmCodeGenerator {
 
     private String trimPush(String s) {
 
-        if(s.endsWith("push eax\n")) return s.indexOf("push eax\n");
+        if(s.endsWith("push eax\n")) return s.substring(0, s.indexOf("push eax\n"));
         else return s;
     }
 

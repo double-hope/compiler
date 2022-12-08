@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="7a9abcb4-9166-47fc-a0e0-7f96aec3d63a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/compiler/FuncStatement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/FuncStatement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/AsmCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/AsmCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/Parser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +75,7 @@
       <workItem from="1670270629983" duration="6256000" />
       <workItem from="1670344681750" duration="21000" />
       <workItem from="1670402790064" duration="14285000" />
-      <workItem from="1670435153882" duration="7806000" />
+      <workItem from="1670435153882" duration="9761000" />
     </task>
     <servers />
   </component>

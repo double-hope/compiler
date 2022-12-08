@@ -415,17 +415,17 @@ public class Parser {
             }
 
             switch (token.type) {
-                case TokenType.IntegerNumber, TokenType.Subtract, TokenType.OpenBracket -> {
+                case IntegerNumber, Subtract, OpenBracket -> {
                     ExpressionStatement temp = new ExpressionStatement(tokensIterator.getCurrent().row,
                             tokensIterator.getCurrent().column, parseExpr());
                     ast.addChild(temp);
                     matchIndentationCurrent();
                 }
-                case TokenType.IfCondition -> {
+                case IfCondition -> {
                     Statement temp = parseConditional();
                     ast.addChild(temp);
                 }
-                case TokenType.Identifier -> {
+                case Identifier -> {
                     if (tokensIterator.moveNext()) {
                         if (tokensIterator.getCurrent() != null &&
                                 tokensIterator.getCurrent().type == TokenType.Assignment) {
@@ -440,8 +440,8 @@ public class Parser {
                                         tokensIterator.getCurrent().column,
                                         name, expr));
                                 switch (ast){
-                                    case Namespace tableContainer -> tableContainer.addVariable(name);
-                                    default -> currentNameSpace.addVariable(name);
+                                    case null -> currentNameSpace.addVariable(name);
+                                    default -> ast.addVariable(name);
                                 }
                             }
                         } else if (tokensIterator.getCurrent().type == TokenType.OpenBracket) {
@@ -459,7 +459,7 @@ public class Parser {
                         }
                     }
                 }
-                case TokenType.PrintOperator -> {
+                case PrintOperator -> {
                     int row = tokensIterator.getCurrent().row;
                     int column = tokensIterator.getCurrent().column;
                     same(TokenType.OpenBracket);
@@ -468,11 +468,11 @@ public class Parser {
                     sameCurrent(TokenType.CloseBracket);
                     ast.addChild(temp);
                 }
-                case TokenType.WhileLoop -> {
+                case WhileLoop -> {
                     Statement temp = parseWhileLoop();
                     ast.addChild(temp);
                 }
-                case TokenType.Return -> {
+                case Return -> {
                     if (currentNameSpace.getClass() != FuncStatement.class) {
                         throw new ParserException("Unexpected return at {tokensIterator.getCurrent().row}:" +
                                 "{tokensIterator.getCurrent().column}");
@@ -485,10 +485,10 @@ public class Parser {
                     ast.addChild(new ReturnStatement(currentToken.row, currentToken.column,
                             _currentNameSpace._return));
                 }
-                case TokenType.FuncDefinition -> {
+                case FuncDefinition -> {
                     Ast temp =  switch (ast) {
-                        case Namespace tableContainer -> parseFunc(new HashMap<>(tableContainer.variables));
-                        default -> parseFunc(new HashMap<>(astTree.variables));
+                        case null -> parseFunc(new HashMap<>(astTree.variables));
+                        default -> parseFunc(new HashMap<>(ast.variables));
                     } ;
 
                     ast.addChild(temp);
