@@ -18,7 +18,13 @@ public class FuncStatement extends Statement implements INamespace{
     }
 
     public void addArg(String argName) {
-        this.variables.put(argName, -(this.variables.size() + 2) * 4);
+        int value = 0;
+
+        for (String key: this.variables.keySet()) {
+            if (this.variables.get(key) < 0) value++;
+        }
+
+        this.variables.put(argName, -(value + 2) * 4);
     }
 
     @Override
