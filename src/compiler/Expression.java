@@ -6,7 +6,7 @@ public class Expression extends Ast{
     }
 
     public void PrintOperation(int depth) {
-        for (var i = 0; i < depth; i++) {
+        for (int i = 0; i < depth; i++) {
             System.out.print('\t');
         }
 

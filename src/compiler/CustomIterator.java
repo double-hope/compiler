@@ -32,13 +32,12 @@ public class CustomIterator<E> implements Iterator<E> {
         return true;
     }
 
-    public boolean movePrev(){
+    public void movePrev(){
         if (index <= 0) {
-            return false;
+            return;
         }
 
         index--;
-        return true;
     }
     public E getCurrent() {
         if (index < 0 || index >= buffer.size())

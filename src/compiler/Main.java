@@ -9,20 +9,20 @@ import java.util.List;
 public class Main {
 
     private static List<Token> lexing(String code) throws LexerException{
-        var codeWithSpaces = code.replace("\t", Constants.FOUR_SPACES);
-        var lexer = new Lexer(codeWithSpaces);
+        String codeWithSpaces = code.replace("\t", Constants.FOUR_SPACES);
+        Lexer lexer = new Lexer(codeWithSpaces);
         lexer.Tokenize();
-        return lexer.Tokens;
+        return lexer.tokens;
     }
 
     private static AstTree parsing(List<Token> tokens) throws ParserException {
-        var parser = new Parser(tokens);
+        Parser parser = new Parser(tokens);
         parser.parse();
         return parser.astTree;
     }
 
     private static String asmCodeGenerator(AstTree astTree) throws AsmGeneratorException {
-        var asmCodeGenerator = new AsmCodeGenerator(astTree);
+        AsmCodeGenerator asmCodeGenerator = new AsmCodeGenerator(astTree);
         asmCodeGenerator.generateAsm();
         return asmCodeGenerator.asmCode;
     }

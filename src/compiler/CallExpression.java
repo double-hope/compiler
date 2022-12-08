@@ -15,7 +15,7 @@ public class CallExpression extends Expression {
     @Override
     public void PrintOperation(int depth) {
         super.PrintOperation(depth);
-        for (var i = 0; i <= depth; i++) {
+        for (int i = 0; i <= depth; i++) {
             System.out.print('\t');
         }
 

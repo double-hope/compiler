@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Parser {
-    private CustomIterator<Token> tokensIterator;
+    private final CustomIterator<Token> tokensIterator;
     public AstTree astTree;
 
     private Namespace currentNameSpace;
 
     public Parser(List<Token> tokens) {
         this.astTree = new AstTree();
-        this.tokensIterator = new CustomIterator<Token>(tokens.GetEnumerator());
+        this.tokensIterator = new CustomIterator<>(tokens.iterator());
         this.currentNameSpace = astTree;
     }
 
@@ -21,9 +21,9 @@ public class Parser {
     }
 
     private Statement parseWhileLoop() throws ParserException {
-        var token = tokensIterator.getCurrent();
+        Token token = tokensIterator.getCurrent();
         tokensIterator.moveNext();
-        var ret = new WhileLoopStatement(token.row,
+        WhileLoopStatement ret = new WhileLoopStatement(token.row,
                 token.column, parseExpr());
         sameCurrent(TokenType.Colon);
         if (!tokensIterator.hasNext()) {
@@ -34,7 +34,7 @@ public class Parser {
         }
 
         if (tokensIterator.getCurrent() == null) return ret;
-        var body = new BlockStatement(tokensIterator.getCurrent().row, tokensIterator.getCurrent().column);
+        BlockStatement body = new BlockStatement(tokensIterator.getCurrent().row, tokensIterator.getCurrent().column);
         if (sameToCurrentBool(TokenType.Newline)) {
             same(TokenType.Indent);
             tokensIterator.movePrev();
@@ -57,10 +57,10 @@ public class Parser {
                     rowCol.row, rowCol.column);
         }
 
-        var condition = parseExpr();
+        Expression condition = parseExpr();
         sameCurrent(TokenType.Colon);
 
-        var body = new BlockStatement(tokensIterator.getCurrent().row,
+        BlockStatement body = new BlockStatement(tokensIterator.getCurrent().row,
                 tokensIterator.getCurrent().column);
 
         if (!tokensIterator.moveNext())
@@ -73,12 +73,12 @@ public class Parser {
         startParse(body, (tokensIterator.getCurrent().type == TokenType.Newline) ? TokenType.Dedent : TokenType.Newline);
 
         if (sameBool(TokenType.ElseCondition)) {
-            var conditionalElseStatement = new ElseStatement(rowCol.row,
+            ElseStatement conditionalElseStatement = new ElseStatement(rowCol.row,
                     rowCol.column,
                     condition
             );
             if (tokensIterator.getCurrent() == null) return conditionalElseStatement;
-            var elseBody = new BlockStatement(tokensIterator.getCurrent().row,
+            BlockStatement elseBody = new BlockStatement(tokensIterator.getCurrent().row,
                     tokensIterator.getCurrent().column);
             if (!tokensIterator.moveNext())
                 if (tokensIterator.getCurrent() != null)
@@ -94,7 +94,7 @@ public class Parser {
             return conditionalElseStatement;
         }
 
-        var conditionalStatement = new IfStatement(rowCol.row,
+        IfStatement conditionalStatement = new IfStatement(rowCol.row,
                 rowCol.column,
                 condition
         );
@@ -139,7 +139,7 @@ public class Parser {
     }
 
     private FuncStatement parseFunc(HashMap<String, Integer> varTable) throws ParserException {
-        var def = new FuncStatement(tokensIterator.getCurrent().row, tokensIterator.getCurrent().column, varTable) {
+        FuncStatement def = new FuncStatement(tokensIterator.getCurrent().row, tokensIterator.getCurrent().column, varTable) {
             name = same(TokenType.Identifier).data;
             args = MatchDefArgs();
         };
@@ -154,7 +154,7 @@ public class Parser {
         same(TokenType.Colon);
 
         if (sameBool(TokenType.Newline)) {
-            var prevNameSpace = currentNameSpace;
+            Namespace prevNameSpace = currentNameSpace;
             currentNameSpace = def;
             startParse(def, TokenType.Dedent);
             currentNameSpace = prevNameSpace;
@@ -169,13 +169,13 @@ public class Parser {
     }
 
     private Expression parseExpr() throws ParserException {
-        var first = parseTerm();
+        Expression first = parseTerm();
         while (sameToCurrentBool(TokenType.Sum))
         {
             if (tokensIterator.getCurrent() == null) continue;
-            var operatorType = tokensIterator.getCurrent().type;
+            TokenType operatorType = tokensIterator.getCurrent().type;
             if (!tokensIterator.moveNext()) continue;
-            var second = parseTerm();
+            Expression second = parseTerm();
             first = new BinaryOperationExpression(first.row,
                     first.column,
                     operatorType,
@@ -186,9 +186,9 @@ public class Parser {
 
         while (sameToCurrentBool(TokenType.Subtract)) {
             if (tokensIterator.getCurrent() == null) continue;
-            var operatorType = tokensIterator.getCurrent().type;
+            TokenType operatorType = tokensIterator.getCurrent().type;
             if (!tokensIterator.moveNext()) continue;
-            var second = parseTerm();
+            Expression second = parseTerm();
             first = new BinaryOperationExpression(first.row,
                     first.column,
                     operatorType,
@@ -198,11 +198,11 @@ public class Parser {
         }
 
         if (sameToCurrentBool(TokenType.IfCondition) && tokensIterator.moveNext()) {
-            var condition = parseExpr();
+            Expression condition = parseExpr();
 
             sameCurrent(TokenType.ElseCondition);
             tokensIterator.moveNext();
-            var elseExpression = parseExpr();
+            Expression elseExpression = parseExpr();
             return new ConditionalExpression(first.row,
                     first.column,
                     first,
@@ -212,9 +212,9 @@ public class Parser {
 
         if (!sameToCurrentBool(TokenType.Greater)) return first;
         if (tokensIterator.getCurrent() == null) return first;
-        var op = tokensIterator.getCurrent().type;
+        TokenType op = tokensIterator.getCurrent().type;
         if (!tokensIterator.moveNext()) return first;
-        var third = parseExpr();
+        Expression third = parseExpr();
         first = new BinaryOperationExpression(first.row,
                 first.column,
                 op,
@@ -226,7 +226,7 @@ public class Parser {
     }
 
     private Expression parseTerm() throws ParserException {
-        var first = parseFactor();
+        Expression first = parseFactor();
         while (tokensIterator.moveNext() &&
                 (sameToCurrentBool(TokenType.Multiply) ||
                         sameToCurrentBool(TokenType.Divide) ||
@@ -236,15 +236,15 @@ public class Parser {
                         sameToCurrentBool(TokenType.Sum) ||
                         sameToCurrentBool(TokenType.Modulo))) {
             if (tokensIterator.getCurrent() == null) continue;
-            var termOperator = tokensIterator.getCurrent().type;
-            var errorrow = tokensIterator.getCurrent().row;
-            var errorCol = tokensIterator.getCurrent().column;
+            TokenType termOperator = tokensIterator.getCurrent().type;
+            int errorRow = tokensIterator.getCurrent().row;
+            int errorCol = tokensIterator.getCurrent().column;
             if (tokensIterator.moveNext()) {
                 Expression second = parseFactor();
                 first = new BinaryOperationExpression(first.row, first.column, termOperator, first, second);
             }
             else {
-                throw new ParserException("Expected token", errorrow, errorCol);
+                throw new ParserException("Expected token", errorRow, errorCol);
             }
         }
 
@@ -255,7 +255,7 @@ public class Parser {
     private Expression parseFactor() throws ParserException {
         if (sameToCurrentBool(TokenType.OpenBracket)) {
             if (tokensIterator.moveNext()) {
-                var expr = parseExpr();
+                Expression expr = parseExpr();
                 sameCurrent(TokenType.CloseBracket);
                 return expr;
             }
@@ -278,12 +278,12 @@ public class Parser {
                 throw new ParserException("Variable used before assignment " +
                         "\"{tokensIterator.getCurrent().data.ToString()}\" " +
                         "at {tokensIterator.getCurrent().row}:{tokensIterator.getCurrent().column + 1}");
-        var name = tokensIterator.getCurrent().data;
+        String name = tokensIterator.getCurrent().data;
         if (tokensIterator.getCurrent() != null && tokensIterator.moveNext() &&
                 tokensIterator.getCurrent().type == TokenType.OpenBracket) {
             tokensIterator.movePrev();
             if (tokensIterator.getCurrent() != null) {
-                var ret = new CallExpression(tokensIterator.getCurrent().row,
+                CallExpression ret = new CallExpression(tokensIterator.getCurrent().row,
                         tokensIterator.getCurrent().column,
                         name, checkArguments());
                 if (!currentNameSpace.thereIsFuncWithName(ret.name)) {
@@ -357,18 +357,18 @@ public class Parser {
     private Expression matchReturn() throws ParserException {
         same(TokenType.Return);
         if (tokensIterator.getCurrent() != null) {
-            var errorrow = tokensIterator.getCurrent().row;
-            var errorCol = tokensIterator.getCurrent().column;
+            int errorRow = tokensIterator.getCurrent().row;
+            int errorCol = tokensIterator.getCurrent().column;
             if (!tokensIterator.moveNext())
                 throw new ParserException("Expected token",
-                        errorrow, errorCol);
+                        errorRow, errorCol);
         }
 
         return parseExpr();
     }
 
     private List<String> matchDefArgs() throws ParserException {
-        var res = new ArrayList<String>();
+        List<String> res = new ArrayList<>();
         same(TokenType.OpenBracket);
         while (tokensIterator.moveNext()) {
             if (tokensIterator.getCurrent() != null)
@@ -417,7 +417,7 @@ public class Parser {
 
             switch (token.type) {
                 case TokenType.IntegerNumber, TokenType.Subtract, TokenType.OpenBracket -> {
-                    var temp = new ExpressionStatement(tokensIterator.getCurrent().row,
+                    ExpressionStatement temp = new ExpressionStatement(tokensIterator.getCurrent().row,
                             tokensIterator.getCurrent().column, parseExpr());
                     ast.addChild(temp);
                     matchIndentationCurrent();
@@ -448,8 +448,8 @@ public class Parser {
                             }
                         } else if (tokensIterator.getCurrent().type == TokenType.OpenBracket) {
                             tokensIterator.movePrev();
-                            var tempEx = parseExpr();
-                            var temp = new ExpressionStatement(tempEx.row, tempEx.column, tempEx);
+                            Expression tempEx = parseExpr();
+                            ExpressionStatement temp = new ExpressionStatement(tempEx.row, tempEx.column, tempEx);
                             ast.addChild(temp);
                             matchIndentation();
                         } else {
@@ -462,16 +462,16 @@ public class Parser {
                     }
                 }
                 case TokenType.PrintOperator -> {
-                    var row = tokensIterator.getCurrent().row;
-                    var column = tokensIterator.getCurrent().column;
+                    int row = tokensIterator.getCurrent().row;
+                    int column = tokensIterator.getCurrent().column;
                     same(TokenType.OpenBracket);
-                    var temp = new PrintStatement(row, column, parseExpr());
+                    PrintStatement temp = new PrintStatement(row, column, parseExpr());
                     tokensIterator.movePrev();
                     sameCurrent(TokenType.CloseBracket);
                     ast.addChild(temp);
                 }
                 case TokenType.WhileLoop -> {
-                    var temp = parseWhileLoop();
+                    Statement temp = parseWhileLoop();
                     ast.addChild(temp);
                 }
                 case TokenType.Return -> {

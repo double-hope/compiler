@@ -36,7 +36,7 @@ public class AsmCodeGenerator {
     }
 
     public void generateAsm() throws AsmGeneratorException {
-        for (var child: this.root.root.getChildren()) {
+        for (Ast child: this.root.root.getChildren()) {
             statementsList.add(generateCode(child));
         }
 
@@ -48,12 +48,12 @@ public class AsmCodeGenerator {
     }
 
     private String generateFunction(FuncStatement funcStatement) throws AsmGeneratorException {
-        var oldNameSpace = currentNameSpace;
+        Namespace oldNameSpace = currentNameSpace;
         currentNameSpace = funcStatement;
-        var bodyStatements = new StringBuilder();
+        StringBuilder bodyStatements = new StringBuilder();
         bodyStatements.append(String.format(Constants.VARIABLE_ASM, funcStatement.varCounter * 4));
 
-        for (var statement : funcStatement.getChildren()) {
+        for (Ast statement : funcStatement.getChildren()) {
             bodyStatements.append(generateCode(statement));
             bodyStatements.append('\n');
         }
@@ -70,17 +70,17 @@ public class AsmCodeGenerator {
     }
 
     private String generateWhileLoop(WhileLoopStatement whileLoopStatement) throws AsmGeneratorException {
-        var id = generateId();
-        var ret = String.format(statementCodeMap.get(whileLoopStatement.getClass()), id,
-                generateExpr(whileLoopStatement.Condition),
+        String id = generateId();
+        return String.format(statementCodeMap.get(whileLoopStatement.getClass()), id,
+                generateExpr(whileLoopStatement.condition),
                 generateCode(whileLoopStatement.getChildren().get(0)));
-        return ret;
     }
 
     private String generateBinExpr(BinaryOperationExpression expression) throws AsmGeneratorException {
-        var left = generateExpr(expression.left);
-        var right = generateExpr(expression.right);
-        var operation =  switch (expression.operation){
+        String left = generateExpr(expression.left);
+        String right = generateExpr(expression.right);
+
+        return switch (expression.operation){
             case Sum -> String.format(Constants.SUM_ASM, right, left);
             case Subtract -> String.format(Constants.SUBSTRACT_ASM, right, left);
             case Multiply -> String.format(Constants.MULTIPLY_ASM, right, left);
@@ -89,10 +89,8 @@ public class AsmCodeGenerator {
             case NotEqual -> String.format(Constants.NOT_EQUAL_ASM, right, left);
             case Greater -> String.format(Constants.GREATER_ASM, right, left);
             case Modulo -> String.format(Constants.MODULO_ASM, right, left);
-            default -> throw new AsmGeneratorException("{expression.Operation.ToString()} not implemented yet");
+            default -> throw new AsmGeneratorException(String.format("%s not implemented yet", expression.operation));
         };
-
-        return operation;
     }
 
     private String generateConstExpr(ConstExpression expression) {
@@ -108,24 +106,24 @@ public class AsmCodeGenerator {
                 ((FuncStatement) currentNameSpace).varCounter * 4, ((FuncStatement) currentNameSpace).args.size() * 4);
     }
 
-    private String generateCallExpression(CallExpression callExpression) throws AsmGeneratorException {
-        var stringBuilder = new StringBuilder();
+    private StringBuilder generateCallExpression(CallExpression callExpression) throws AsmGeneratorException {
+        StringBuilder stringBuilder = new StringBuilder();
         Collections.reverse(callExpression.args);
         if (callExpression.args.size() > 0) {
-            for (var i = 0; i < callExpression.args.size(); i++) {
-                var arg = callExpression.args.get(i);
+            for (int i = 0; i < callExpression.args.size(); i++) {
+                Expression arg = callExpression.args.get(i);
                 stringBuilder.append(generateExpr(arg));
             }
         }
 
         stringBuilder.append(String.format(Constants.CALL_EXPRESSION_ASM, callExpression.name));
-        return stringBuilder.toString();
+        return stringBuilder;
     }
 
     private String generateConditionalExpression(ConditionalExpression conditionalExpression) throws AsmGeneratorException {
-        var currId = generateId();
+        String currId = generateId();
         if (conditionalExpression.elseBody != null) {
-            return String.format("{0}{1}{2}{3}",
+            return String.format("%s%s%s%s",
                     String.format(Constants.CONDITION_IF_WITH_ELSE_ASM, generateExpr(conditionalExpression.condition), currId),
                     String.format(Constants.CONDITION_BODY_ASM, generateExpr(conditionalExpression.body), currId),
                     String.format(Constants.CONDITION_ELSE_ASM, currId, generateExpr(conditionalExpression.elseBody)),
@@ -133,7 +131,7 @@ public class AsmCodeGenerator {
         }
 
         return String.format(Constants.CONDITION_IF_ASM, generateExpr(conditionalExpression.condition), currId) +
-                "{GenerateExpr(conditionalExpression.Body)}\n" +
+                String.format("%s\n", generateExpr(conditionalExpression.body))  +
                 String.format(Constants.ID_ASM, currId);
     }
 
@@ -145,7 +143,7 @@ public class AsmCodeGenerator {
             case CallExpression callExpression -> generateCallExpression(callExpression);
             case ConditionalExpression conditionalExpression -> generateConditionalExpression(conditionalExpression);
             default -> throw new AsmGeneratorException(
-                    "{expression.GetType()} at row = {expression.Row} column = {expression.Column}");
+                    String.format("%s at row = %d column = %d", expression.getClass().toString(), expression.row, expression.column));
         };
     }
 
@@ -155,8 +153,8 @@ public class AsmCodeGenerator {
 
     private String getVarOffset(String varName) {
         return currentNameSpace.variables.get(varName) < 0
-                ? "+{-_currentNameSpace.Variables[varName]}"
-            : "-{_currentNameSpace.Variables[varName]}";
+                ? String.format("+%d", -currentNameSpace.variables.get(varName))
+            : String.format("-%d", currentNameSpace.variables.get(varName));
     }
 
     private String trimPush(String s) -> s.EndsWith("push eax\n") ? s[..s.IndexOf("push eax\n", StringComparison.Ordinal)] : s;
@@ -171,12 +169,11 @@ public class AsmCodeGenerator {
             case ElseStatement elseStatement -> generateElseStatement(elseStatement);
             case IfStatement ifStatement -> generateIfStatement(ifStatement);
             case FuncStatement funcStatement -> generateFunction(funcStatement);
-            case ReturnStatement returnStatement -> generateReturn(returnStatement.Return);
+            case ReturnStatement returnStatement -> generateReturn(returnStatement._return);
             case PrintStatement print -> String.format(statementCodeMap.get(print.getClass()),
                     trimPush(generateExpr(print.expression)));
             default -> throw new AsmGeneratorException(
-                    "Unknown type: {st.GetType()}" +
-                    " {st.Row + 1}:{st.Column + 1}");
+                   String.format("Unknown type: %s %d:%d", st.getClass().toString(), st.row + 1, st.column + 1));
         };
     }
 
@@ -189,7 +186,7 @@ public class AsmCodeGenerator {
 
     private String generateElseStatement(ElseStatement elseStatement) throws AsmGeneratorException {
         return String.format(statementCodeMap.get(elseStatement.getClass()),
-                generateExpr(elseStatement.Condition),
+                generateExpr(elseStatement.condition),
                 generateId(),
                 generateCode(elseStatement.getChildren().get(0)),
                 generateCode(elseStatement.getChildren().get(1))
