@@ -1,7 +1,8 @@
 package compiler;
 
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -27,15 +28,13 @@ public class Main {
         return asmCodeGenerator.asmCode;
     }
 
-    private static void writeCodeToFile(String asmCode) {
-        using var fs = File.Create(Directory.GetParent(
-                Directory.GetCurrentDirectory()) + Constants.OUTPUT_FILE_NAME);
-        var bytes = new UTF8Encoding(true).GetBytes(asmCode);
-        fs.Write(bytes, 0, bytes.Length);
+    private static void writeCodeToFile(String asmCode) throws IOException {
+        FileOutputStream fs = (FileOutputStream) Files.createFile(Path.of(Constants.BASE_PATH.concat(Constants.OUTPUT_FILE_NAME)));
+        byte[] bytes = asmCode.getBytes(StandardCharsets.UTF_8);
+        fs.write(bytes, 0, bytes.length);
     }
 
     public static void main(String[] args) throws IOException, LexerException, AsmGeneratorException, ParserException {
-
         String pyText = Files.readString(Path.of(Constants.BASE_PATH.concat(Constants.INPUT_FILE_NAME)));
         List<Token> tokens = lexing(pyText);
         AstTree astrTree = parsing(tokens);

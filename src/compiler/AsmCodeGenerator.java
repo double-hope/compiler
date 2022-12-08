@@ -1,6 +1,7 @@
 package compiler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AsmCodeGenerator {
     private final String moduleName = "name";
@@ -106,7 +107,7 @@ public class AsmCodeGenerator {
                 ((FuncStatement) currentNameSpace).varCounter * 4, ((FuncStatement) currentNameSpace).args.size() * 4);
     }
 
-    private StringBuilder generateCallExpression(CallExpression callExpression) throws AsmGeneratorException {
+    private String generateCallExpression(CallExpression callExpression) throws AsmGeneratorException {
         StringBuilder stringBuilder = new StringBuilder();
         Collections.reverse(callExpression.args);
         if (callExpression.args.size() > 0) {
@@ -117,7 +118,7 @@ public class AsmCodeGenerator {
         }
 
         stringBuilder.append(String.format(Constants.CALL_EXPRESSION_ASM, callExpression.name));
-        return stringBuilder;
+        return stringBuilder.toString();
     }
 
     private String generateConditionalExpression(ConditionalExpression conditionalExpression) throws AsmGeneratorException {
@@ -157,7 +158,11 @@ public class AsmCodeGenerator {
             : String.format("-%d", currentNameSpace.variables.get(varName));
     }
 
-    private String trimPush(String s) -> s.EndsWith("push eax\n") ? s[..s.IndexOf("push eax\n", StringComparison.Ordinal)] : s;
+    private String trimPush(String s) {
+
+        if(s.endsWith("push eax\n")) return s.indexOf("push eax\n");
+        else return s;
+    }
 
     private String generateCode(Ast st) throws AsmGeneratorException {
 
@@ -165,8 +170,8 @@ public class AsmCodeGenerator {
             case AssignStatement assignStatement -> generateAssigStatement(assignStatement);
             case BlockStatement blockStatement -> generateBlockStatement(blockStatement);
             case WhileLoopStatement whileLoop -> generateWhileLoop(whileLoop);
-            case ExpressionStatement expressionStatement -> generateExpressionStatement(expressionStatement);
             case ElseStatement elseStatement -> generateElseStatement(elseStatement);
+            case ExpressionStatement expressionStatement -> generateExpressionStatement(expressionStatement);
             case IfStatement ifStatement -> generateIfStatement(ifStatement);
             case FuncStatement funcStatement -> generateFunction(funcStatement);
             case ReturnStatement returnStatement -> generateReturn(returnStatement._return);
@@ -199,9 +204,15 @@ public class AsmCodeGenerator {
     }
 
     private String generateBlockStatement(BlockStatement blockStatement) {
-        return String.join('\n',
-                blockStatement.getChildren()
-                        .Select(c => GenerateCode(c) + '\n'));
+        ArrayList<String> blockStatementList = (ArrayList<String>) blockStatement.getChildren().stream().map(c -> {
+            try {
+                return generateCode(c) + '\n';
+            } catch (AsmGeneratorException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+
+        return String.join("\n", blockStatementList);
     }
 
     private String generateAssigStatement(AssignStatement assignStatement) throws AsmGeneratorException {

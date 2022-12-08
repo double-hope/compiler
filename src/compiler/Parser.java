@@ -139,10 +139,9 @@ public class Parser {
     }
 
     private FuncStatement parseFunc(HashMap<String, Integer> varTable) throws ParserException {
-        FuncStatement def = new FuncStatement(tokensIterator.getCurrent().row, tokensIterator.getCurrent().column, varTable) {
-            name = same(TokenType.Identifier).data;
-            args = MatchDefArgs();
-        };
+        FuncStatement def = new FuncStatement(tokensIterator.getCurrent().row, tokensIterator.getCurrent().column, varTable);
+        def.name = same(TokenType.Identifier).data;
+        def.args = matchDefArgs();
         def.funcList = new ArrayList<>(currentNameSpace.funcList);
         currentNameSpace.funcList.add(def);
         for (String arg: def.args) {
@@ -440,10 +439,9 @@ public class Parser {
                                         tokensIterator.getCurrent().row,
                                         tokensIterator.getCurrent().column,
                                         name, expr));
-                                if (ast instanceof Namespace tableContainer) {
-                                    tableContainer.addVariable(name);
-                                } else {
-                                    currentNameSpace.addVariable(name);
+                                switch (ast){
+                                    case Namespace tableContainer -> tableContainer.addVariable(name);
+                                    default -> currentNameSpace.addVariable(name);
                                 }
                             }
                         } else if (tokensIterator.getCurrent().type == TokenType.OpenBracket) {
@@ -482,10 +480,10 @@ public class Parser {
 
                     Token currentToken = tokensIterator.getCurrent();
                     tokensIterator.movePrev();
-                    FuncStatement currentNameSpace = ((FuncStatement) currentNameSpace);
-                    currentNameSpace._return = matchReturn();
+                    FuncStatement _currentNameSpace = ((FuncStatement) currentNameSpace);
+                    _currentNameSpace._return = matchReturn();
                     ast.addChild(new ReturnStatement(currentToken.row, currentToken.column,
-                            currentNameSpace._return));
+                            _currentNameSpace._return));
                 }
                 case TokenType.FuncDefinition -> {
                     Ast temp =  switch (ast) {

@@ -3,7 +3,7 @@ package compiler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ast {
+public class Ast extends Namespace{
     public int row;
 
     public int column;
