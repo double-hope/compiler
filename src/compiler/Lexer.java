@@ -53,7 +53,7 @@ public class Lexer {
 
         int newCurrentLevel = CountLevel(line);
         if (newCurrentLevel - _currentLevel > 1) {
-            throw new LexerException("Not expected indent at {row + 1}");
+            throw new LexerException(String.format("Not expected indent at %d", row + 1));
         } else if (newCurrentLevel - _currentLevel == 1) {
             _currentLevel = newCurrentLevel;
             tokens.add(new Token(TokenType.Indent, "\t", row, 0));
@@ -115,7 +115,7 @@ public class Lexer {
         }
 
         if (!tryParseInt(st.toString()))
-            throw new LexerException("invalid syntax at {str} {row + 1}:{col}");
+            throw new LexerException(String.format("invalid syntax at %s %d:%d", str, row + 1, col) );
         tokens.add(new Token(TokenType.IntegerNumber, st.toString(), row, col));
         return st.length();
     }
@@ -173,7 +173,7 @@ public class Lexer {
             return LexerChars(str, row, col, st);
         }
 
-        throw new LexerException("Unexpected token {str[col]} at {row + 1}:{col}");
+        throw new LexerException(String.format("Unexpected token %s at %d:%d", str.charAt(col), row + 1, col));
     }
 
     private TokenType LexerTwoChars(int symb1, int symb2) {

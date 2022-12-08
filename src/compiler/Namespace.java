@@ -15,7 +15,7 @@ public abstract class Namespace implements INamespace{
             if(func.name.equals(f)) function = func;
         }
         if(function == null)
-            throw new IllegalArgumentException("Function {f} not found");
+            throw new IllegalArgumentException(String.format("Function %s not found", f));
         return function;
     }
     @Override

@@ -30,7 +30,7 @@ public class Parser {
             tokensIterator.movePrev();
             if (tokensIterator.getCurrent() != null)
                 throw new ParserException(
-                        "Expected token {tokensIterator.getCurrent()} at {tokensIterator.getCurrent().row}:{tokensIterator.getCurrent().column}");
+                        String.format("Expected token %s at %d:%d", tokensIterator.getCurrent(), tokensIterator.getCurrent().row, tokensIterator.getCurrent().column));
         }
 
         if (tokensIterator.getCurrent() == null) return ret;
@@ -119,7 +119,7 @@ public class Parser {
                                 return res;
                             default:
                                 throw new ParserException(
-                                        "Unexpected token {tokensIterator.getCurrent().type.ToString()} at {tokensIterator.getCurrent().row + 1}:{tokensIterator.getCurrent().column}",
+                                        String.format("Unexpected token %s at %d:%d", tokensIterator.getCurrent().type.toString(), tokensIterator.getCurrent().row + 1, tokensIterator.getCurrent().column),
                                         tokensIterator.getCurrent().row, tokensIterator.getCurrent().column
                                 );
                         }
@@ -129,7 +129,7 @@ public class Parser {
                         return res;
                     default:
                         throw new ParserException(
-                                "Unexpected token {tokensIterator.getCurrent().type.ToString()} at {tokensIterator.getCurrent().row + 1}:{tokensIterator.getCurrent().column}",
+                                String.format("Unexpected token %s at %d:%d", tokensIterator.getCurrent().type.toString(), tokensIterator.getCurrent().row + 1, tokensIterator.getCurrent().column),
                                 tokensIterator.getCurrent().row, tokensIterator.getCurrent().column
                         );
                 }
@@ -286,13 +286,13 @@ public class Parser {
                         tokensIterator.getCurrent().column,
                         name, checkArguments());
                 if (!currentNameSpace.thereIsFuncWithName(ret.name)) {
-                    throw new ParserException("Name {ret.Name} is not defined ", ret.row, ret.column);
+                    throw new ParserException(String.format("Name %s is not defined ", ret.name), ret.row, ret.column);
                 }
 
                 if (currentNameSpace.getFuncByName(ret.name).args.size() != ret.args.size()) {
-                    throw new ParserException("Function {ret.Name} called with {ret.Args.Count} args, " +
-                            "but it have {_currentNameSpace.GetFuncByName(ret.Name).Args.Count} args " +
-                            "at {ret.row + 1} : {ret.column + 1}",
+                    throw new ParserException(String.format("Function %s called with %d args, ", ret.name, ret.args.size()) +
+                            String.format("but it have %d args ", currentNameSpace.getFuncByName(ret.name).args.size()) +
+                            String.format("at %d:%d", ret.row + 1, ret.column + 1),
                             ret.row, ret.column);
                 }
 
@@ -309,16 +309,16 @@ public class Parser {
         }
 
         throw new ParserException("Variable used before assignment " +
-                "\"{tokensIterator.getCurrent().data.ToString()}\" " +
-                "at {tokensIterator.getCurrent().row}:{tokensIterator.getCurrent().column + 1}");
+                String.format("\"%s\" ", tokensIterator.getCurrent().data) +
+                String.format("at %d:%d", tokensIterator.getCurrent().row, tokensIterator.getCurrent().column + 1));
     }
 
     private Token same(TokenType tokenType) throws ParserException {
         if (!tokensIterator.moveNext()) throw new ParserException();
         if (tokensIterator.getCurrent() != null && tokenType != tokensIterator.getCurrent().type) {
             throw new ParserException("Got " + tokensIterator.getCurrent().type +
-                    ", {tokenType.ToString()} expected" +
-                    " at {tokensIterator.getCurrent().row + 1}:{tokensIterator.getCurrent().column + 1}",
+                    String.format(", %s expected", tokenType.toString())  +
+                    String.format(" at %d:%d", tokensIterator.getCurrent().row + 1, tokensIterator.getCurrent().column + 1),
                     tokensIterator.getCurrent().row, tokensIterator.getCurrent().column);
         }
 
@@ -328,8 +328,8 @@ public class Parser {
     private void sameCurrent(TokenType tokenType) throws ParserException {
         if (tokensIterator.getCurrent() != null && tokenType != tokensIterator.getCurrent().type) {
             throw new ParserException("Got " + tokensIterator.getCurrent().type +
-                    ", {tokenType.ToString()} expected" +
-                    " at {tokensIterator.getCurrent().row + 1}:{tokensIterator.getCurrent().column}");
+                    String.format(", %s expected", tokenType.toString())  +
+                    String.format(" at %d:%d", tokensIterator.getCurrent().row + 1, tokensIterator.getCurrent().column));
         }
     }
 
@@ -382,8 +382,7 @@ public class Parser {
                                 case CloseBracket:
                                     return res;
                                 default:
-                                    throw new ParserException(
-                                            "Unexpected token at {tokensIterator.getCurrent().row + 1}:{tokensIterator.getCurrent().column}",
+                                    throw new ParserException(String.format("Unexpected token at %d:%d", tokensIterator.getCurrent().row + 1, tokensIterator.getCurrent().column),
                                             tokensIterator.getCurrent().row, tokensIterator.getCurrent().column
                                     );
                             }
@@ -392,8 +391,7 @@ public class Parser {
                     case CloseBracket:
                         return res;
                     default:
-                        throw new ParserException(
-                                "Unexpected token at {tokensIterator.getCurrent().row + 1}:{tokensIterator.getCurrent().column}",
+                        throw new ParserException(String.format("Unexpected token at %d:%d", tokensIterator.getCurrent().row + 1, tokensIterator.getCurrent().column),
                                 tokensIterator.getCurrent().row, tokensIterator.getCurrent().column
                         );
                 }
@@ -474,8 +472,7 @@ public class Parser {
                 }
                 case Return -> {
                     if (currentNameSpace.getClass() != FuncStatement.class) {
-                        throw new ParserException("Unexpected return at {tokensIterator.getCurrent().row}:" +
-                                "{tokensIterator.getCurrent().column}");
+                        throw new ParserException(String.format("Unexpected return at %d:%d", tokensIterator.getCurrent().row, tokensIterator.getCurrent().column));
                     }
 
                     Token currentToken = tokensIterator.getCurrent();

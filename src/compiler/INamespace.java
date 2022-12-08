@@ -1,8 +1,5 @@
 package compiler;
 
-import java.util.HashMap;
-import java.util.List;
-
 public interface INamespace {
 
     FuncStatement getFuncByName(String f);

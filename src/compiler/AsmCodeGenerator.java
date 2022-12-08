@@ -149,7 +149,7 @@ public class AsmCodeGenerator {
     }
 
     private String generateId() {
-        return "{ModuleName}{_currentFreeId++}";
+        return String.format("%s%d", moduleName, currentFreeId++);
     }
 
     private String getVarOffset(String varName) {
