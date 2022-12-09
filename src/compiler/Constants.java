@@ -16,87 +16,86 @@ public class Constants {
             include \\masm32\\include\\masm32rt.inc
             _main PROTO
 
-            {0}
+            %s
             .data
             .code
             _start:
             push ebp
             mov ebp, esp
-            sub esp, {3}
+            sub esp, %d
             invoke  _main
-            add esp, {3}
+            add esp, %d
             mov esp, ebp
             pop ebp
             ret
             _main PROC
 
-            {1}
+            %s
             printf("\\n")
             inkey
             ret
 
             _main ENDP
 
-            {2}END _start
+            %sEND _start
 
             """;
-    public static final String PROTO_ASM = "{0} PROTO\n";
+    public static final String PROTO_ASM = "%s PROTO\n";
     public static final String ASSIGN_STATEMENT_ASM =
-            "{0}\n\tpop eax\n\tmov dword ptr[ebp{1}], eax\n";
+            "%s\n\tpop eax\n\tmov dword ptr[ebp%s], eax\n";
     public static final String IF_STATEMENT_ASM = """
-            {0}pop eax
+            %spop eax
             cmp eax, 0
-            je {1}else
-            {2}{1}else:
+            je %selse
+            %s%selse:
             """;
     public static final String ELSE_STATEMENT_ASM = """
-            {0}pop eax
+            %spop eax
             cmp eax, 0
-            je {1}else
-            {2}jmp {1}final
-            {1}else:
-            {3}{1}final:
+            je %selse
+            %sjmp %sfinal
+            %selse:
+            %s%sfinal:
             """;
 
     public static final String PRINT_STATEMENT_ASM =
-            "{0}fn MessageBoxA,0, str$(eax), \"Prokhorchuk Nadiia IO-03\", MB_OK\n";
+            "%sfn MessageBoxA,0, str$(eax), \"Prokhorchuk Nadiia IO-03\", MB_OK\n";
     public static final String WHILE_STATEMENT_ASM = """
-            Loop{0}start:
-            {1}pop eax
+            Loop%sstart:
+            %spop eax
             cmp eax, 0
-            je Loop{0}end
-            {2}jmp Loop{0}start
-            Loop{0}end:
+            je Loop%send
+            %sjmp Loop%sstart
+            Loop%send:
             """;
-    public static final String EXPRESSION_STATEMENT_ASM = "{0}\n";
+    public static final String EXPRESSION_STATEMENT_ASM = "%s\n";
     public static final String PROCEDURE_ASM = """
-            {0} PROC
-            {1}
-            {0} ENDP
+            %s PROC
+            %s
+            %s ENDP
             """;
-    public static final String FUNCTION_BODY_ARGUMENTS_ASM = "ret {0}\n";
-    public static final String VAR_EXPRESSION_ASM = "mov eax, dword ptr[ebp{0}] ; {1}\npush eax\n";
-    public static final String SUM_ASM = "{0}\n{1}\npop eax\npop ecx\nadd eax, ecx\npush eax\n";
-    public static final String SUBSTRACT_ASM = "{0}\n{1}\npop eax\npop ecx\nsub eax, ecx\npush eax\n";
-    public static final String DIVIDE_ASM = "{0}\n{1}\npop eax\npop ebx\nxor edx, edx\ndiv ebx\npush eax\n";
-    public static final String MULTIPLY_ASM = "{0}\n{1}\npop eax\npop ecx\nimul ecx\npush eax\n";
-    public static final String MODULO_ASM = "{0}\n{1}\npop eax\npop ebx\nxor edx, edx\ndiv ebx\npush edx\n";
-    public static final String CALL_EXPRESSION_ASM = "invoke {0}\n push eax\n";
+    public static final String FUNCTION_BODY_ARGUMENTS_ASM = "ret %d\n";
+    public static final String VAR_EXPRESSION_ASM = "mov eax, dword ptr[ebp%s] ; %s\npush eax\n";
+    public static final String SUM_ASM = "%s\n%s\npop eax\npop ecx\nadd eax, ecx\npush eax\n";
+    public static final String SUBTRACT_ASM = "%s\n%s\npop eax\npop ecx\nsub eax, ecx\npush eax\n";
+    public static final String DIVIDE_ASM = "%s\n%s\npop eax\npop ebx\nxor edx, edx\ndiv ebx\npush eax\n";
+    public static final String MULTIPLY_ASM = "%s\n%s\npop eax\npop ecx\nimul ecx\npush eax\n";
+    public static final String MODULO_ASM = "%s\n%s\npop eax\npop ebx\nxor edx, edx\ndiv ebx\npush edx\n";
+    public static final String CALL_EXPRESSION_ASM = "invoke %s\n push eax\n";
     public static final String EQUAL_ASM =
-            "{0}\n{1}\npop eax\npop ecx\ncmp eax, ecx\nmov eax, 0\nsete al\npush eax\n";
+            "%s\n%s\npop eax\npop ecx\ncmp eax, ecx\nmov eax, 0\nsete al\npush eax\n";
     public static final String NOT_EQUAL_ASM =
-            "{0}\n{1}\npop eax\npop ecx\ncmp eax, ecx\nmov eax, 0\nsetne al\npush eax\n";
-    public static final String GREATER_ASM = "{0}\n{1}\npop eax\npop ecx\ncmp ecx, eax\nmov eax, 0\nsetl al\npush eax\n";
-    public static final String CONDITION_BODY_ASM = "{0}\njmp {1}final\n";
-    public static final String CONDITION_ELSE_ASM = "{0}else:\n{1}\n";
-    public static final String VARIABLE_ASM = "push ebp\nmov ebp, esp\nsub esp, {0}\n";
-    public static final String FUNCTION_BODY_PARAMS_ASM = "add esp, {0}\nmov esp, ebp\npop ebp\n";
-    public static final String CONST_ASM = "\tpush {0}\n";
-    public static final String RETURN_ASM = "{0}\npop eax\nadd esp, {1}\nmov esp, ebp\npop ebp\nret {2}\n";
-    public static final String CONDITION_IF_ASM = "{0}\npop eax\ncmp eax, 0\nje {1}final\n";
-    public static final String CONDITION_IF_WITH_ELSE_ASM = "{0}\npop eax\ncmp eax, 0\nje {1}else\n";
-    public static final String ID_ASM = "{0}final:\n";
-
+            "%s\n%s\npop eax\npop ecx\ncmp eax, ecx\nmov eax, 0\nsetne al\npush eax\n";
+    public static final String GREATER_ASM = "%s\n%s\npop eax\npop ecx\ncmp ecx, eax\nmov eax, 0\nsetl al\npush eax\n";
+    public static final String CONDITION_BODY_ASM = "%s\njmp %sfinal\n";
+    public static final String CONDITION_ELSE_ASM = "%selse:\n%s\n";
+    public static final String VARIABLE_ASM = "push ebp\nmov ebp, esp\nsub esp, %d\n";
+    public static final String FUNCTION_BODY_PARAMS_ASM = "add esp, %d\nmov esp, ebp\npop ebp\n";
+    public static final String CONST_ASM = "\tpush %s\n";
+    public static final String RETURN_ASM = "%s\npop eax\nadd esp, %d\nmov esp, ebp\npop ebp\nret %d\n";
+    public static final String CONDITION_IF_ASM = "%s\npop eax\ncmp eax, 0\nje %sfinal\n";
+    public static final String CONDITION_IF_WITH_ELSE_ASM = "%s\npop eax\ncmp eax, 0\nje %selse\n";
+    public static final String ID_ASM = "%sfinal:\n";
     public static final String PYTHON_PRINT = "print";
     public static final String PYTHON_WHILE = "while";
     public static final String PYTHON_IF = "if";

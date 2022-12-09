@@ -1,10 +1,8 @@
 package compiler;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AsmCodeGenerator {
-    private final String moduleName = "name";
     private final AstTree root;
     private Namespace currentNameSpace;
     private int currentFreeId;
@@ -24,9 +22,6 @@ public class AsmCodeGenerator {
     }
 
     private final List<String> statementsList;
-    private final String ProcedureTemplate = Constants.PROCEDURE_ASM;
-    private final String ProtoTemplate = Constants.PROTO_ASM;
-    private final String MasmCodeTemplate = Constants.MASM_CODE_TEMPLATE;
 
     public AsmCodeGenerator(AstTree root) {
         functionProtoNames = new ArrayList<>();
@@ -42,7 +37,8 @@ public class AsmCodeGenerator {
         }
 
 
-        asmCode = String.format(MasmCodeTemplate, String.join("", functionProtoNames),
+        String masmCodeTemplate = Constants.MASM_CODE_TEMPLATE;
+        asmCode = String.format(masmCodeTemplate, String.join("", functionProtoNames),
                 String.join("", statementsList),
                 String.join("", functions),
                 (currentNameSpace.variables.size() * 4));
@@ -64,9 +60,11 @@ public class AsmCodeGenerator {
         bodyStatements.append(String.format(Constants.FUNCTION_BODY_ARGUMENTS_ASM, funcStatement.args.size() * 4));
 
         currentNameSpace = oldNameSpace;
-        functionProtoNames.add(String.format(ProtoTemplate, funcStatement.name));
+        String protoTemplate = Constants.PROTO_ASM;
+        functionProtoNames.add(String.format(protoTemplate, funcStatement.name));
 
-        functions.add(String.format(ProcedureTemplate, funcStatement.name, bodyStatements));
+        String procedureTemplate = Constants.PROCEDURE_ASM;
+        functions.add(String.format(procedureTemplate, funcStatement.name, bodyStatements));
         return "\n";
     }
 
@@ -83,7 +81,7 @@ public class AsmCodeGenerator {
 
         return switch (expression.operation){
             case Sum -> String.format(Constants.SUM_ASM, right, left);
-            case Subtract -> String.format(Constants.SUBSTRACT_ASM, right, left);
+            case Subtract -> String.format(Constants.SUBTRACT_ASM, right, left);
             case Multiply -> String.format(Constants.MULTIPLY_ASM, right, left);
             case Divide -> String.format(Constants.DIVIDE_ASM, right, left);
             case Equal -> String.format(Constants.EQUAL_ASM, right, left);
@@ -95,7 +93,7 @@ public class AsmCodeGenerator {
     }
 
     private String generateConstExpr(ConstExpression expression) {
-        return String.format(Constants.CONST_ASM, (Object) expression.value);
+        return String.format(Constants.CONST_ASM, ((Object) expression.value).toString());
     }
 
     private String generateVarExpr(VarExpression expression) {
@@ -149,6 +147,7 @@ public class AsmCodeGenerator {
     }
 
     private String generateId() {
+        String moduleName = "name";
         return String.format("%s%d", moduleName, currentFreeId++);
     }
 
