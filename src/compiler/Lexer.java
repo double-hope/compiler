@@ -176,11 +176,11 @@ public class Lexer {
         throw new LexerException(String.format("Unexpected token %s at %d:%d", str.charAt(col), row + 1, col));
     }
 
-    private TokenType LexerTwoChars(int symb1, int symb2) {
-        if (symb1 == ('!') && symb2 == ('=')) {
+    private TokenType LexerTwoChars(int symbol1, int symbol2) {
+        if (symbol1 == ('!') && symbol2 == ('=')) {
             return TokenType.NotEqual;
         }
-        else if(symb1 == ('=') && symb2 == ('='))
+        else if(symbol1 == ('=') && symbol2 == ('='))
         {
             return TokenType.Equal;
         }
@@ -189,9 +189,9 @@ public class Lexer {
     }
 
 
-    private TokenType LexerSingleChar(char symb) {
+    private TokenType LexerSingleChar(char symbol) {
         TokenType type;
-        switch (symb) {
+        switch (symbol) {
             case '(' -> type = TokenType.OpenBracket;
             case ')' -> type = TokenType.CloseBracket;
             case '*' -> type = TokenType.Multiply;

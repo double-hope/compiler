@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AstTree extends Namespace{
+public class AstTree extends Functions {
     public Ast root;
 
     public List<FuncStatement> funcList;

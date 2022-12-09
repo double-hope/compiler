@@ -8,7 +8,7 @@ public class Parser {
     private final CustomIterator<Token> tokensIterator;
     public AstTree astTree;
 
-    private Namespace currentNameSpace;
+    private Functions currentNameSpace;
 
     public Parser(List<Token> tokens) {
         this.astTree = new AstTree();
@@ -153,7 +153,7 @@ public class Parser {
         same(TokenType.Colon);
 
         if (sameBool(TokenType.Newline)) {
-            Namespace prevNameSpace = currentNameSpace;
+            Functions prevNameSpace = currentNameSpace;
             currentNameSpace = def;
             startParse(def, TokenType.Dedent);
             currentNameSpace = prevNameSpace;
@@ -488,6 +488,7 @@ public class Parser {
                         default -> parseFunc(new HashMap<>(ast.variables));
                     } ;
 
+                    assert ast != null;
                     ast.addChild(temp);
                 }
                 default -> {}

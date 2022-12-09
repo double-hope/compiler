@@ -2,7 +2,7 @@ package compiler;
 
 import java.util.*;
 
-public abstract class Namespace implements INamespace{
+public abstract class Functions implements IFunctions {
     List<FuncStatement> funcList = new ArrayList<>();
     HashMap<String, Integer> variables = new HashMap<>();
     public int varCounter;

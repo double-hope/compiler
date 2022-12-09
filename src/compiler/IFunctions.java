@@ -1,6 +1,6 @@
 package compiler;
 
-public interface INamespace {
+public interface IFunctions {
     FuncStatement getFuncByName(String f);
     boolean thereIsFuncWithName(String f);
     void addVariable(String varName);

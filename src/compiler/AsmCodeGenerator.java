@@ -4,7 +4,7 @@ import java.util.*;
 
 public class AsmCodeGenerator {
     private final AstTree root;
-    private Namespace currentNameSpace;
+    private Functions currentNameSpace;
     private int currentFreeId;
     private final List<String> functions;
     private final List<String> functionProtoNames;
@@ -45,7 +45,7 @@ public class AsmCodeGenerator {
     }
 
     private String generateFunction(FuncStatement funcStatement) throws AsmGeneratorException {
-        Namespace oldNameSpace = currentNameSpace;
+        Functions oldNameSpace = currentNameSpace;
         currentNameSpace = funcStatement;
         StringBuilder bodyStatements = new StringBuilder();
         bodyStatements.append(String.format(Constants.VARIABLE_ASM, funcStatement.varCounter * 4));

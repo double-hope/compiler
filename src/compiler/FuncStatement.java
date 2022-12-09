@@ -3,8 +3,9 @@ package compiler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-public class FuncStatement extends Statement implements INamespace{
+public class FuncStatement extends Statement implements IFunctions {
     public List<String> args;
     public HashMap<String, Integer> variables;
     public List<FuncStatement> funcList;
@@ -40,7 +41,7 @@ public class FuncStatement extends Statement implements INamespace{
     public void addVariable(String varName) {
         if (this.variables.containsKey(varName)) return;
         this.varCounter++;
-        String[] indexes = (String[]) variables.keySet().toArray();
+        Set<String> indexes = variables.keySet();
 
         for (String index: indexes) {
             if(variables.get(index) > 0) variables.put(index, variables.get(index) + 4);

@@ -57,7 +57,7 @@ public class CustomIterator<E> implements Iterator<E> {
 
     public CustomIterator(Iterator<E> iterator){
         this.iterator = iterator;
-        this.buffer = new ArrayList<E>();
+        this.buffer = new ArrayList<>();
         this.index = -1;
     }
 }
