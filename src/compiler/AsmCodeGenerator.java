@@ -153,8 +153,8 @@ public class AsmCodeGenerator {
 
     private String getVarOffset(String varName) {
         return currentNameSpace.variables.get(varName) < 0
-                ? String.format("+%d", -currentNameSpace.variables.get(varName))
-            : String.format("-%d", currentNameSpace.variables.get(varName));
+                ? String.format("+%s", -currentNameSpace.variables.get(varName))
+            : String.format("-%s", currentNameSpace.variables.get(varName));
     }
 
     private String trimPush(String s) {

@@ -6,7 +6,6 @@ import java.util.List;
 
 public class AstTree extends Namespace{
     public Ast root;
-    public int varCounter;
 
     public List<FuncStatement> funcList;
     public HashMap<String, Integer> variables = new HashMap<>();

@@ -37,7 +37,6 @@ public class Main {
     public static void main(String[] args) throws IOException, LexerException, AsmGeneratorException, ParserException {
         String pyText = Files.readString(Path.of(System.getProperty("user.dir").concat(Constants.INPUT_FILE_NAME)));
         List<Token> tokens = lexing(pyText);
-        System.out.println(tokens.iterator());
         AstTree astrTree = parsing(tokens);
         String asmCode = asmCodeGenerator(astrTree);
         writeCodeToFile(asmCode);

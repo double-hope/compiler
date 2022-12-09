@@ -1,11 +1,10 @@
 package compiler;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class Namespace implements INamespace{
-    List<FuncStatement> funcList;
-    HashMap<String, Integer> variables;
+    List<FuncStatement> funcList = new ArrayList<>();
+    HashMap<String, Integer> variables = new HashMap<>();
     public int varCounter;
 
     @Override
@@ -26,7 +25,7 @@ public abstract class Namespace implements INamespace{
     public void addVariable(String varName) {
         if (variables.containsKey(varName)) return;
         varCounter++;
-        String[] indexes = (String[]) variables.keySet().toArray();
+        Set<String> indexes = variables.keySet();
 
         for (String index: indexes) {
             if(variables.get(index) > 0) variables.put(index, variables.get(index) + 4);
