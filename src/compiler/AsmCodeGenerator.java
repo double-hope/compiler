@@ -39,9 +39,9 @@ public class AsmCodeGenerator {
 
         String masmCodeTemplate = Constants.MASM_CODE_TEMPLATE;
         asmCode = String.format(masmCodeTemplate, String.join("", functionProtoNames),
+                (currentFunctions.variables.size() * 4), (currentFunctions.variables.size() * 4),
                 String.join("", statementsList),
-                String.join("", functions),
-                (currentFunctions.variables.size() * 4));
+                String.join("", functions));
     }
 
     private String generateFunction(FuncStatement funcStatement) throws AsmGeneratorException {
@@ -64,7 +64,7 @@ public class AsmCodeGenerator {
         functionProtoNames.add(String.format(protoTemplate, funcStatement.name));
 
         String procedureTemplate = Constants.PROCEDURE_ASM;
-        functions.add(String.format(procedureTemplate, funcStatement.name, bodyStatements));
+        functions.add(String.format(procedureTemplate, funcStatement.name, bodyStatements, funcStatement.name));
         return "\n";
     }
 
@@ -72,7 +72,9 @@ public class AsmCodeGenerator {
         String id = generateId();
         return String.format(statementCodeMap.get(whileLoopStatement.getClass()), id,
                 generateExpr(whileLoopStatement.condition),
-                generateCode(whileLoopStatement.getChildren().get(0)));
+                id,
+                generateCode(whileLoopStatement.getChildren().get(0)),
+                id, id);
     }
 
     private String generateBinExpression(BinaryOperationExpression expression) throws AsmGeneratorException {
@@ -185,7 +187,8 @@ public class AsmCodeGenerator {
         return String.format(statementCodeMap.get(ifStatement.getClass()),
                 generateExpr(ifStatement.condition),
                 generateId(),
-                generateCode(ifStatement.getChildren().get(0)));
+                generateCode(ifStatement.getChildren().get(0)),
+                generateId());
     }
 
     private String generateElseStatement(ElseStatement elseStatement) throws AsmGeneratorException {
@@ -193,7 +196,9 @@ public class AsmCodeGenerator {
                 generateExpr(elseStatement.condition),
                 generateId(),
                 generateCode(elseStatement.getChildren().get(0)),
-                generateCode(elseStatement.getChildren().get(1))
+                generateId(),
+                generateCode(elseStatement.getChildren().get(1)),
+                generateId()
         );
     }
 
