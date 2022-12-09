@@ -8,7 +8,7 @@ public abstract class Functions implements IFunctions {
     public int varCounter;
 
     @Override
-    public FuncStatement getFuncByName(String f) {
+    public FuncStatement getFunctionByName(String f) {
         FuncStatement function = null;
         for(FuncStatement func: funcList){
             if(func.name.equals(f)) function = func;
@@ -18,7 +18,7 @@ public abstract class Functions implements IFunctions {
         return function;
     }
     @Override
-    public boolean thereIsFuncWithName(String f) {
+    public boolean thereIsFunctionWithName(String f) {
         return funcList.stream().anyMatch(func -> func.name.equals(f));
     }
     @Override

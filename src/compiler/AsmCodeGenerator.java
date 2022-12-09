@@ -4,7 +4,7 @@ import java.util.*;
 
 public class AsmCodeGenerator {
     private final AstTree root;
-    private Functions currentNameSpace;
+    private Functions currentFunctions;
     private int currentFreeId;
     private final List<String> functions;
     private final List<String> functionProtoNames;
@@ -28,7 +28,7 @@ public class AsmCodeGenerator {
         statementsList = new ArrayList<>();
         functions = new ArrayList<>();
         this.root = root;
-        this.currentNameSpace = root;
+        this.currentFunctions = root;
     }
 
     public void generateAsm() throws AsmGeneratorException {
@@ -41,12 +41,12 @@ public class AsmCodeGenerator {
         asmCode = String.format(masmCodeTemplate, String.join("", functionProtoNames),
                 String.join("", statementsList),
                 String.join("", functions),
-                (currentNameSpace.variables.size() * 4));
+                (currentFunctions.variables.size() * 4));
     }
 
     private String generateFunction(FuncStatement funcStatement) throws AsmGeneratorException {
-        Functions oldNameSpace = currentNameSpace;
-        currentNameSpace = funcStatement;
+        Functions oldNameSpace = currentFunctions;
+        currentFunctions = funcStatement;
         StringBuilder bodyStatements = new StringBuilder();
         bodyStatements.append(String.format(Constants.VARIABLE_ASM, funcStatement.varCounter * 4));
 
@@ -59,7 +59,7 @@ public class AsmCodeGenerator {
 
         bodyStatements.append(String.format(Constants.FUNCTION_BODY_ARGUMENTS_ASM, funcStatement.args.size() * 4));
 
-        currentNameSpace = oldNameSpace;
+        currentFunctions = oldNameSpace;
         String protoTemplate = Constants.PROTO_ASM;
         functionProtoNames.add(String.format(protoTemplate, funcStatement.name));
 
@@ -75,7 +75,7 @@ public class AsmCodeGenerator {
                 generateCode(whileLoopStatement.getChildren().get(0)));
     }
 
-    private String generateBinExpr(BinaryOperationExpression expression) throws AsmGeneratorException {
+    private String generateBinExpression(BinaryOperationExpression expression) throws AsmGeneratorException {
         String left = generateExpr(expression.left);
         String right = generateExpr(expression.right);
 
@@ -102,7 +102,7 @@ public class AsmCodeGenerator {
 
     private String generateReturn(Expression returnExpression) throws AsmGeneratorException {
         return String.format(Constants.RETURN_ASM, generateExpr(returnExpression),
-                ((FuncStatement) currentNameSpace).varCounter * 4, ((FuncStatement) currentNameSpace).args.size() * 4);
+                ((FuncStatement) currentFunctions).varCounter * 4, ((FuncStatement) currentFunctions).args.size() * 4);
     }
 
     private String generateCallExpression(CallExpression callExpression) throws AsmGeneratorException {
@@ -136,7 +136,7 @@ public class AsmCodeGenerator {
 
     private String generateExpr(Expression expression) throws AsmGeneratorException {
         return switch (expression) {
-            case BinaryOperationExpression binaryOperationExpression -> generateBinExpr(binaryOperationExpression);
+            case BinaryOperationExpression binaryOperationExpression -> generateBinExpression(binaryOperationExpression);
             case ConstExpression constExpression -> generateConstExpr(constExpression);
             case VarExpression varExpression -> generateVarExpr(varExpression);
             case CallExpression callExpression -> generateCallExpression(callExpression);
@@ -152,9 +152,9 @@ public class AsmCodeGenerator {
     }
 
     private String getVarOffset(String varName) {
-        return currentNameSpace.variables.get(varName) < 0
-                ? String.format("+%s", -currentNameSpace.variables.get(varName))
-            : String.format("-%s", currentNameSpace.variables.get(varName));
+        return currentFunctions.variables.get(varName) < 0
+                ? String.format("+%s", -currentFunctions.variables.get(varName))
+            : String.format("-%s", currentFunctions.variables.get(varName));
     }
 
     private String trimPush(String s) {
@@ -166,7 +166,7 @@ public class AsmCodeGenerator {
     private String generateCode(Ast st) throws AsmGeneratorException {
 
         return switch (st) {
-            case AssignStatement assignStatement -> generateAssigStatement(assignStatement);
+            case AssignStatement assignStatement -> generateAssignStatement(assignStatement);
             case BlockStatement blockStatement -> generateBlockStatement(blockStatement);
             case WhileLoopStatement whileLoop -> generateWhileLoop(whileLoop);
             case ElseStatement elseStatement -> generateElseStatement(elseStatement);
@@ -214,7 +214,7 @@ public class AsmCodeGenerator {
         return String.join("\n", blockStatementList);
     }
 
-    private String generateAssigStatement(AssignStatement assignStatement) throws AsmGeneratorException {
+    private String generateAssignStatement(AssignStatement assignStatement) throws AsmGeneratorException {
         return String.format(statementCodeMap.get(assignStatement.getClass()),
                 generateExpr(assignStatement.expression),
                 getVarOffset(assignStatement.varName));

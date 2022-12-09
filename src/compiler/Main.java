@@ -12,7 +12,7 @@ public class Main {
     private static List<Token> lexing(String code) throws LexerException{
         String codeWithSpaces = code.replace("\t", Constants.FOUR_SPACES);
         Lexer lexer = new Lexer(codeWithSpaces);
-        lexer.Tokenize();
+        lexer.tokenize();
         return lexer.tokens;
     }
 

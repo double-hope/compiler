@@ -29,12 +29,12 @@ public class FuncStatement extends Statement implements IFunctions {
     }
 
     @Override
-    public FuncStatement getFuncByName(String f) {
+    public FuncStatement getFunctionByName(String f) {
         return null;
     }
 
     @Override
-    public boolean thereIsFuncWithName(String f) {
+    public boolean thereIsFunctionWithName(String f) {
         return false;
     }
     @Override

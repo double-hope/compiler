@@ -7,16 +7,16 @@ import java.util.List;
 public class AstTree extends Functions {
     public Ast root;
 
-    public List<FuncStatement> funcList;
+    public List<FuncStatement> functionsList;
     public HashMap<String, Integer> variables = new HashMap<>();
 
     @Override
-    public FuncStatement getFuncByName(String f) {
+    public FuncStatement getFunctionByName(String f) {
         return null;
     }
 
     @Override
-    public boolean thereIsFuncWithName(String f) {
+    public boolean thereIsFunctionWithName(String f) {
         return false;
     }
 
@@ -28,6 +28,6 @@ public class AstTree extends Functions {
 
     public AstTree() {
         this.root = new Ast();
-        this.funcList = new ArrayList<>();
+        this.functionsList = new ArrayList<>();
     }
 }

@@ -5,9 +5,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/compiler/AsmCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/AsmCodeGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/compiler/AstTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/AstTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/compiler/INamespace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/INamespace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/compiler/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/compiler/Namespace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/Namespace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/FuncStatement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/FuncStatement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/Functions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/Functions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/IFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/IFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/compiler/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/compiler/Parser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,22 +87,11 @@
       <workItem from="1670435153882" duration="16434000" />
       <workItem from="1670603764833" duration="59000" />
       <workItem from="1670603843836" duration="4000" />
-      <workItem from="1670620933544" duration="4106000" />
+      <workItem from="1670620933544" duration="4799000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/compiler/AsmCodeGenerator.java</url>
-          <line>154</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

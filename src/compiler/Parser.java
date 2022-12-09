@@ -285,13 +285,13 @@ public class Parser {
                 CallExpression ret = new CallExpression(tokensIterator.getCurrent().row,
                         tokensIterator.getCurrent().column,
                         name, checkArguments());
-                if (!currentNameSpace.thereIsFuncWithName(ret.name)) {
+                if (!currentNameSpace.thereIsFunctionWithName(ret.name)) {
                     throw new ParserException(String.format("Name %s is not defined ", ret.name), ret.row, ret.column);
                 }
 
-                if (currentNameSpace.getFuncByName(ret.name).args.size() != ret.args.size()) {
+                if (currentNameSpace.getFunctionByName(ret.name).args.size() != ret.args.size()) {
                     throw new ParserException(String.format("Function %s called with %d args, ", ret.name, ret.args.size()) +
-                            String.format("but it have %d args ", currentNameSpace.getFuncByName(ret.name).args.size()) +
+                            String.format("but it have %d args ", currentNameSpace.getFunctionByName(ret.name).args.size()) +
                             String.format("at %d:%d", ret.row + 1, ret.column + 1),
                             ret.row, ret.column);
                 }

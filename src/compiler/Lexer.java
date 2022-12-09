@@ -14,16 +14,16 @@ public class Lexer {
         _currentLevel = 0;
     }
 
-    public void Tokenize() throws LexerException{
+    public void tokenize() throws LexerException{
         String[] strings = _code.split(System.lineSeparator());
         for (int i = 0; i < strings.length; i++) {
-            if (ParseLine(strings[i], i)) {
+            if (parseLine(strings[i], i)) {
                 tokens.add(new Token(TokenType.Newline, "\n", i, strings[i].length()));
             }
         }
     }
 
-    private static int CountLevel(String str) {
+    private static int countLevel(String str) {
         int spaces = 0;
         char[] chars = str.toCharArray();
 
@@ -39,7 +39,7 @@ public class Lexer {
         return spaces / 4;
     }
 
-    private boolean ParseLine(String line, int row) throws LexerException{
+    private boolean parseLine(String line, int row) throws LexerException{
 
         char[] chars = line.toCharArray();
 
@@ -51,7 +51,7 @@ public class Lexer {
             return false;
         }
 
-        int newCurrentLevel = CountLevel(line);
+        int newCurrentLevel = countLevel(line);
         if (newCurrentLevel - _currentLevel > 1) {
             throw new LexerException(String.format("Not expected indent at %d", row + 1));
         } else if (newCurrentLevel - _currentLevel == 1) {
@@ -80,13 +80,13 @@ public class Lexer {
                     return true;
                 default: {
                     if (Character.isDigit(line.charAt(pos))) {
-                        pos += StartsWithDigit(line, row, pos);
+                        pos += startsWithDigit(line, row, pos);
                     }
                     else if (Character.isLetter(line.charAt(pos))) {
-                        pos += StartsWithLetter(line, row, pos);
+                        pos += startsWithLetter(line, row, pos);
                     }
                     else if (Constants.SYMBOLS.contains(line.charAt(pos))) {
-                        pos += StartsWithSym(line, row, pos);
+                        pos += startsWithSym(line, row, pos);
                     }
 
                     break;
@@ -105,7 +105,7 @@ public class Lexer {
             return false;
         }
     }
-    private int StartsWithDigit(String str, int row, int col) throws LexerException{
+    private int startsWithDigit(String str, int row, int col) throws LexerException{
         int pos = col;
         StringBuilder st = new StringBuilder(str.length() - col);
         while (pos < str.length()) {
@@ -120,21 +120,21 @@ public class Lexer {
         return st.length();
     }
 
-    private int LexerChars(String str, int row, int col, StringBuilder st) {
+    private int lexerChars(String str, int row, int col, StringBuilder st) {
         if (st.length() >= 2) {
-            if (LexerTwoChars(str.charAt(col), str.charAt(col + 1)) != TokenType.NotImplemented) {
-                tokens.add(new Token(LexerTwoChars(str.charAt(col), str.charAt(col + 1)),
-                        LexerTwoChars(str.charAt(col), str.charAt(col + 1)).toString(), row, col));
+            if (lexerTwoChars(str.charAt(col), str.charAt(col + 1)) != TokenType.NotImplemented) {
+                tokens.add(new Token(lexerTwoChars(str.charAt(col), str.charAt(col + 1)),
+                        lexerTwoChars(str.charAt(col), str.charAt(col + 1)).toString(), row, col));
                 return 2;
             }
         }
 
-        if (LexerSingleChar(str.charAt(col)) == TokenType.NotImplemented) return 0;
-        tokens.add(new Token(LexerSingleChar(str.charAt(col)), LexerSingleChar(str.charAt(col)).toString(), row, col));
+        if (lexerSingleChar(str.charAt(col)) == TokenType.NotImplemented) return 0;
+        tokens.add(new Token(lexerSingleChar(str.charAt(col)), lexerSingleChar(str.charAt(col)).toString(), row, col));
         return 1;
     }
 
-    private int StartsWithLetter(String str, int row, int column) {
+    private int startsWithLetter(String str, int row, int column) {
         StringBuilder st = new StringBuilder(str.length() - column);
         int pos = column;
         while (pos < str.length() && (Character.isDigit(str.charAt(pos)) || Character.isLetter(str.charAt(pos)))) {
@@ -156,7 +156,7 @@ public class Lexer {
         return st.toString().length();
     }
 
-    private int StartsWithSym(String str, int row, int col) throws LexerException{
+    private int startsWithSym(String str, int row, int col) throws LexerException{
         StringBuilder st = new StringBuilder(str.length() - col);
         int pos = col;
         while (pos < str.length()) {
@@ -170,13 +170,13 @@ public class Lexer {
         }
 
         if (st.length() > 0) {
-            return LexerChars(str, row, col, st);
+            return lexerChars(str, row, col, st);
         }
 
         throw new LexerException(String.format("Unexpected token %s at %d:%d", str.charAt(col), row + 1, col));
     }
 
-    private TokenType LexerTwoChars(int symbol1, int symbol2) {
+    private TokenType lexerTwoChars(int symbol1, int symbol2) {
         if (symbol1 == ('!') && symbol2 == ('=')) {
             return TokenType.NotEqual;
         }
@@ -189,7 +189,7 @@ public class Lexer {
     }
 
 
-    private TokenType LexerSingleChar(char symbol) {
+    private TokenType lexerSingleChar(char symbol) {
         TokenType type;
         switch (symbol) {
             case '(' -> type = TokenType.OpenBracket;

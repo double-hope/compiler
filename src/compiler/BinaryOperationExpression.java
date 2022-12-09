@@ -15,10 +15,10 @@ public class BinaryOperationExpression extends Expression{
     }
 
     @Override
-    public void PrintOperation(int depth) {
-        super.PrintOperation(depth);
-        left.PrintOperation(depth + 1);
+    public void printOperation(int depth) {
+        super.printOperation(depth);
+        left.printOperation(depth + 1);
         System.out.println("\t" + operation);
-        right.PrintOperation(depth + 1);
+        right.printOperation(depth + 1);
     }
 }

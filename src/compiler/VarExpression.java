@@ -9,8 +9,8 @@ public class VarExpression extends Expression{
     }
 
     @Override
-    public void PrintOperation(int depth) {
-        super.PrintOperation(depth);
+    public void printOperation(int depth) {
+        super.printOperation(depth);
         for (int i = 0; i <= depth; i++) {
             System.out.print('\t');
         }

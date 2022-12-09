@@ -5,7 +5,7 @@ public class Expression extends Ast{
         super(row, col);
     }
 
-    public void PrintOperation(int depth) {
+    public void printOperation(int depth) {
         for (int i = 0; i < depth; i++) {
             System.out.print('\t');
         }
