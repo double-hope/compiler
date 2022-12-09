@@ -143,7 +143,7 @@ public class Lexer {
         }
 
         switch (st.toString()) {
-            case Constants.PYTHON_FUNCTION_DEFENITION ->
+            case Constants.PYTHON_FUNCTION_DEFINITION ->
                     tokens.add(new Token(TokenType.FuncDefinition, st.toString(), row, column));
             case Constants.PYTHON_WHILE -> tokens.add(new Token(TokenType.WhileLoop, st.toString(), row, column));
             case Constants.PYTHON_PRINT -> tokens.add(new Token(TokenType.PrintOperator, st.toString(), row, column));

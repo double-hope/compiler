@@ -102,5 +102,5 @@ public class Constants {
     public static final String PYTHON_IF = "if";
     public static final String PYTHON_ELSE = "else";
     public static final String PYTHON_RETURN = "return";
-    public static final String PYTHON_FUNCTION_DEFENITION = "def";
+    public static final String PYTHON_FUNCTION_DEFINITION = "def";
 }
