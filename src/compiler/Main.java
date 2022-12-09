@@ -29,13 +29,13 @@ public class Main {
     }
 
     private static void writeCodeToFile(String asmCode) throws IOException {
-        FileOutputStream fs = (FileOutputStream) Files.createFile(Path.of(Constants.BASE_PATH.concat(Constants.OUTPUT_FILE_NAME)));
+        FileOutputStream fs = (FileOutputStream) Files.createFile(Path.of(System.getProperty("user.dir").concat(Constants.OUTPUT_FILE_NAME)));
         byte[] bytes = asmCode.getBytes(StandardCharsets.UTF_8);
         fs.write(bytes, 0, bytes.length);
     }
 
     public static void main(String[] args) throws IOException, LexerException, AsmGeneratorException, ParserException {
-        String pyText = Files.readString(Path.of(Constants.BASE_PATH.concat(Constants.INPUT_FILE_NAME)));
+        String pyText = Files.readString(Path.of(System.getProperty("user.dir").concat(Constants.INPUT_FILE_NAME)));
         List<Token> tokens = lexing(pyText);
         System.out.println(tokens.iterator());
         AstTree astrTree = parsing(tokens);

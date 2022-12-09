@@ -5,13 +5,9 @@ import java.util.List;
 
 public class Constants {
     public static final String FOUR_SPACES = "    ";
-    public static final String BASE_PATH = "data/";
-    public static final String INPUT_FILE_NAME = "main.py";
-    public static final String OUTPUT_FILE_NAME = "main.asm";
-
+    public static final String INPUT_FILE_NAME = "\\KP-7-Java-IO-03-Prokhorchuk.py";
+    public static final String OUTPUT_FILE_NAME = "\\KP-7-Java-IO-03-Prokhorchuk.asm";
     public static final List<Character> SYMBOLS = Arrays.asList('(', ')', '*', ',', '-', '+', '/', ':', '=', '>', '!', '%');
-
-
     public static final String MASM_CODE_TEMPLATE = """
             .386
             .model flat,stdcall
